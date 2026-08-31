@@ -17,3 +17,9 @@ while true
         s.close
     end
 end
+
+def handle_connection
+    # ストリーム処理でsocketからデータを読み込む
+    # リクエストを解析する
+    # レスポンスを組み立てる
+end
