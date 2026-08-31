@@ -90,15 +90,17 @@ class Response
         @headers['Content-Length'] = @body.bytesize.to_s
 
         status_message = STATUS_CODES[@status]
-        socket.write "HTTP/1.1 #{@status} #{status_message}\r\n"
+        response = "HTTP/1.1 #{@status} #{status_message}\r\n"
 
         @headers.each do |key, value|
-            socket.write "#{key}: #{value}\r\n"
+            response << "#{key}: #{value}\r\n"
         end
+        response << "\r\n"
+        response << @body
 
-        socket.write "\r\n"
-
-        socket.write @body
+        puts response
+        
+        socket.write(response)
     end
 end
 
