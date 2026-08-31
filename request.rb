@@ -39,12 +39,16 @@ class Request
             body = socket.read(length)
         end
 
-        {
+        req = {
             method: method,
             path: path,
             version: version,
             headers: headers,
             body: body
         }
+
+        puts req
+        
+        req
     end
 end
