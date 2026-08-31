@@ -40,9 +40,12 @@ class Response
         status_message = STATUS_CODES[@status]
         response = "HTTP/1.1 #{@status} #{status_message}\r\n"
 
+        # 1行ずつヘッダーの情報を組み立てる
         @headers.each do |key, value|
             response << "#{key}: #{value}\r\n"
         end
+
+        # 空行を追加することでヘッダーが終わりであることを伝える
         response << "\r\n"
         response << @body
 
