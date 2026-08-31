@@ -21,8 +21,10 @@ while true
             
             case req[:path]
             when "/"
+                html_content = File.read("public/index.html")
+
                 res.set_status(200)
-                res.set_body("Welcome to my scratch HTTP Server!", "text/plain")
+                res.set_body(html_content, "text/html; charset=utf-8")
             when "/users"
                 res.set_status(200)
                 res.set_body('{"message": "user list endpoint"}', "application/json")  
