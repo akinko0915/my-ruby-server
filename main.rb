@@ -1,5 +1,6 @@
 require "socket"
 require "uri"
+require "json"
 require_relative 'response'
 require_relative 'request'
 
@@ -25,9 +26,15 @@ while true
 
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
-            when "/users"
+            when "/api/users"
+                json_data = [
+                    { id: 1, name: "Alice", email: "alice@example.com" },
+                    { id: 2, name: "Bob", email: "bob@example.com" },
+                    { id: 3, name: "Charlie", email: "charlie@example.com" }
+                ].to_json
+
                 res.set_status(200)
-                res.set_body('{"message": "user list endpoint"}', "application/json")  
+                res.set_body(json_data, "application/json")  
             else
                 res.set_status(404)
                 res.set_body("404 Page Not Found", "text/plain")
