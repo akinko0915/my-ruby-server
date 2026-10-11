@@ -33,10 +33,13 @@ while true
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
             when "/api/users"
-                json_data = users_data.to_json
+                case req[:method]
+                when "GET"
+                    json_data = users_data.to_json
 
-                res.set_status(200)
-                res.set_body(json_data, "application/json")  
+                    res.set_status(200)
+                    res.set_body(json_data, "application/json")
+                end
             else
                 res.set_status(404)
                 res.set_body("404 Page Not Found", "text/plain")
