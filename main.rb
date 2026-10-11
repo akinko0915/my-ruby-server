@@ -10,6 +10,12 @@ addr = gs.addr
 addr.shift
 printf("server is on %s\n", addr.join(":"))
 
+users_data = [
+    { id: 1, name: "Alice", email: "alice@example.com" },
+    { id: 2, name: "Bob", email: "bob@example.com" },
+    { id: 3, name: "Charlie", email: "charlie@example.com" }
+]
+
 while true
     # https://docs.ruby-lang.org/ja/latest/class/Thread.html
     Thread.start(gs.accept) do |s|
@@ -27,11 +33,7 @@ while true
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
             when "/api/users"
-                json_data = [
-                    { id: 1, name: "Alice", email: "alice@example.com" },
-                    { id: 2, name: "Bob", email: "bob@example.com" },
-                    { id: 3, name: "Charlie", email: "charlie@example.com" }
-                ].to_json
+                json_data = users_data.to_json
 
                 res.set_status(200)
                 res.set_body(json_data, "application/json")  
