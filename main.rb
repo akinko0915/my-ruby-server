@@ -53,7 +53,8 @@ while true
                     res.set_status(200)
                     res.set_body(json_data, "application/json") 
                 when "POST"
-                    body = req[:body]
+                    # ボディがないリクエストでは nil になるので、空文字列として扱う
+                    body = req[:body].to_s
 
                     # https://docs.ruby-lang.org/ja/latest/method/URI/s/decode_www_form.html
                     params = URI.decode_www_form(body).to_h
