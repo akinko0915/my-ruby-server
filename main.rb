@@ -65,6 +65,7 @@ while true
 
                 case req[:method]
                 when "DELETE"
+                    users_data.delete_if { |user| user[:id] == id }
                     res.set_status(204)
                 end
             else
