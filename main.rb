@@ -10,6 +10,12 @@ addr = gs.addr
 addr.shift
 printf("server is on %s\n", addr.join(":"))
 
+users_data = [
+    { id: 1, name: "Alice", email: "alice@example.com" },
+    { id: 2, name: "Bob", email: "bob@example.com" },
+    { id: 3, name: "Charlie", email: "charlie@example.com" }
+]
+
 while true
     # https://docs.ruby-lang.org/ja/latest/class/Thread.html
     Thread.start(gs.accept) do |s|
@@ -27,14 +33,32 @@ while true
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
             when "/api/users"
-                json_data = [
-                    { id: 1, name: "Alice", email: "alice@example.com" },
-                    { id: 2, name: "Bob", email: "bob@example.com" },
-                    { id: 3, name: "Charlie", email: "charlie@example.com" }
-                ].to_json
+                case req[:method]
+                when "GET"
+                    json_data = users_data.to_json
 
-                res.set_status(200)
-                res.set_body(json_data, "application/json")  
+                    res.set_status(200)
+                    res.set_body(json_data, "application/json") 
+                when "POST"
+                    body = req[:body]
+
+                    # https://docs.ruby-lang.org/ja/latest/method/URI/s/decode_www_form.html
+                    params = URI.decode_www_form(body).to_h
+                    id = users_data.empty? ? 1 : users_data.map { |u| u[:id] }.max + 1
+                    name = params["name"]
+                    email = params["email"]
+
+                    if name.to_s.empty? || email.to_s.empty?
+                        res.set_status(400)
+                        res.set_body("400 Bad Request", "text/plain")
+                    else
+                        users_data << {id: id, name: name, email: email}
+    
+                        res.set_status(201)
+                        res.set_header('Location', "/users/#{id}")
+                        res.set_body(users_data.to_json, "application/json")
+                    end
+                end
             else
                 res.set_status(404)
                 res.set_body("404 Page Not Found", "text/plain")

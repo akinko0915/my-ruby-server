@@ -24,6 +24,20 @@
       <li>読み込み中...</li>
     </ul>
 
+    <form id="user-form">
+      <div>
+        <label for="name">名前を入力: </label>
+        <input type="text" name="name" id="name" required />
+      </div>
+      <div>
+        <label for="email">メールアドレス: </label>
+        <input type="email" name="email" id="email" required />
+      </div>
+      <div>
+        <input type="submit" value="登録!" />
+      </div>
+    </form>
+
     <script>
       // 画面の読み込みが終わったら API を呼び出す
       document.addEventListener("DOMContentLoaded", () => {
@@ -53,6 +67,33 @@
           .catch((error) => {
             console.error("エラー:", error);
             document.getElementById("user-list").innerHTML = '<li style="color: red;">データの取得に失敗しました</li>';
+          });
+      });
+
+      const form = document.getElementById("user-form");
+      form.addEventListener("submit", (event) => {
+        // ページリロードをキャンセル
+        event.preventDefault();
+
+        const formData = new FormData(form);
+
+        fetch("/api/users", {
+          method: "POST",
+          body: new URLSearchParams(formData),
+        })
+          .then((response) => {
+            if (response.status === 201) {
+              // 特定のパスへ明示的にジャンプ
+              window.location.href = "/";
+            } else if (response.status === 400) {
+              alert("必要な情報が入力されていません");
+            } else {
+              alert("登録に失敗しました");
+            }
+          })
+          .catch((error) => {
+            console.error("通信エラー:", error);
+            alert("通信エラーが発生しました");
           });
       });
     </script>
