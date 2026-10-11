@@ -32,6 +32,11 @@ while true
 
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
+            when %r{\A/users/(\d+)\z}
+                html_content = File.read("public/user.html")
+
+                res.set_status(200)
+                res.set_body(html_content, "text/html; charset=utf-8")
             when "/api/users"
                 case req[:method]
                 when "GET"
