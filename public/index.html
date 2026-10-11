@@ -72,7 +72,12 @@
             // 4. 配列データをループして <li> 要素を生成・挿入
             users.forEach((user) => {
               const li = document.createElement("li");
-              li.textContent = `${user.name} (${user.email})`;
+
+              // 名前とメールアドレスを、ユーザー詳細へのリンクにする
+              const link = document.createElement("a");
+              link.href = `/users/${user.id}`;
+              link.textContent = `${user.name} (${user.email})`;
+              li.appendChild(link);
 
               // 削除ボタンを追加（クリック時の処理は下の user-list のクリックイベントで行う）
               const deleteButton = document.createElement("button");
