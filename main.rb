@@ -71,6 +71,10 @@ while true
                         res.set_header('Location', "/api/users/#{id}")
                         res.set_body(users_data.to_json, "application/json")
                     end
+                else
+                    res.set_status(405)
+                    res.set_header('Allow', 'GET, POST')
+                    res.set_body("405 Method Not Allowed", "text/plain")
                 end
             when %r{\A/api/users/(\d+)\z}
                 id = $1.to_i
