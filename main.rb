@@ -63,10 +63,15 @@ while true
                 id = $1.to_i
                 user = users_data.find { |user| user[:id] == id }
 
-                case req[:method]
-                when "DELETE"
-                    users_data.delete_if { |user| user[:id] == id }
-                    res.set_status(204)
+                if user.nil?
+                    res.set_status(404)
+                    res.set_body("404 User Not Found", "text/plain")
+                else
+                    case req[:method]
+                    when "DELETE"
+                        users_data.delete_if { |user| user[:id] == id }
+                        res.set_status(204)
+                    end
                 end
             else
                 res.set_status(404)
