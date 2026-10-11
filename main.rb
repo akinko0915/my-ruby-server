@@ -68,6 +68,7 @@ while true
                     res.set_body("404 User Not Found", "text/plain")
                 else
                     case req[:method]
+                    when "GET"
                     when "DELETE"
                         users_data.delete_if { |user| user[:id] == id }
                         res.set_status(204)
