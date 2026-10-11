@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ユーザー詳細</title>
+  </head>
+  <body>
+    <div id="profile"></div>
+
+    <a href="/">一覧に戻る</a>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const user_id = location.pathname.split("/").pop();
+        fetch(`/api/users/${user_id}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("ネットワークエラーが発生しました");
+            }
+            return response.json();
+          })
+          .then((user) => {
+            const profileElement = document.getElementById("profile");
+
+            // 表示先を空にしてから、名前とメールアドレスを追加する
+            profileElement.innerHTML = "";
+
+            const h2 = document.createElement("h2");
+            const p = document.createElement("p");
+
+            h2.textContent = user.name;
+            p.textContent = user.email;
+
+            profileElement.appendChild(h2);
+            profileElement.appendChild(p);
+          })
+          .catch((error) => {
+            console.error("エラー:", error);
+            document.getElementById("profile").innerHTML = '<p style="color: red;">データの取得に失敗しました</p>';
+          });
+      });
+    </script>
+  </body>
+</html>

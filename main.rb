@@ -32,6 +32,19 @@ while true
 
                 res.set_status(200)
                 res.set_body(html_content, "text/html; charset=utf-8")
+            when %r{\A/users/(\d+)\z}
+                id = $1.to_i
+                user = users_data.find { |user| user[:id] == id }
+
+                if user.nil?
+                    res.set_status(404)
+                    res.set_body("404 User Not Found", "text/plain")
+                else
+                    html_content = File.read("public/user.html")
+
+                    res.set_status(200)
+                    res.set_body(html_content, "text/html; charset=utf-8")
+                end
             when "/api/users"
                 case req[:method]
                 when "GET"
@@ -40,7 +53,8 @@ while true
                     res.set_status(200)
                     res.set_body(json_data, "application/json") 
                 when "POST"
-                    body = req[:body]
+                    # ボディがないリクエストでは nil になるので、空文字列として扱う
+                    body = req[:body].to_s
 
                     # https://docs.ruby-lang.org/ja/latest/method/URI/s/decode_www_form.html
                     params = URI.decode_www_form(body).to_h
@@ -55,9 +69,13 @@ while true
                         users_data << {id: id, name: name, email: email}
     
                         res.set_status(201)
-                        res.set_header('Location', "/users/#{id}")
+                        res.set_header('Location', "/api/users/#{id}")
                         res.set_body(users_data.to_json, "application/json")
                     end
+                else
+                    res.set_status(405)
+                    res.set_header('Allow', 'GET, POST')
+                    res.set_body("405 Method Not Allowed", "text/plain")
                 end
             when %r{\A/api/users/(\d+)\z}
                 id = $1.to_i
@@ -68,12 +86,15 @@ while true
                     res.set_body("404 User Not Found", "text/plain")
                 else
                     case req[:method]
+                    when "GET"
+                        res.set_status(200)
+                        res.set_body(user.to_json, "application/json") 
                     when "DELETE"
                         users_data.delete_if { |user| user[:id] == id }
                         res.set_status(204)
                     else
                         res.set_status(405)
-                        res.set_header('Allow', 'DELETE')
+                        res.set_header('Allow', 'GET, DELETE')
                         res.set_body("405 Method Not Allowed", "text/plain")
                     end
                 end
