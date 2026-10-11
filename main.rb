@@ -38,7 +38,9 @@ while true
                     json_data = users_data.to_json
 
                     res.set_status(200)
-                    res.set_body(json_data, "application/json")
+                    res.set_body(json_data, "application/json") 
+                when "POST"
+                    res.set_status(201)
                 end
             else
                 res.set_status(404)
