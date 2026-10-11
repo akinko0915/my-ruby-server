@@ -71,6 +71,10 @@ while true
                     when "DELETE"
                         users_data.delete_if { |user| user[:id] == id }
                         res.set_status(204)
+                    else
+                        res.set_status(405)
+                        res.set_header('Allow', 'DELETE')
+                        res.set_body("405 Method Not Allowed", "text/plain")
                     end
                 end
             else
