@@ -55,7 +55,7 @@ while true
                         users_data << {id: id, name: name, email: email}
     
                         res.set_status(201)
-                        res.set_header('Location', "/users/#{id}")
+                        res.set_header('Location', "/api/users/#{id}")
                         res.set_body(users_data.to_json, "application/json")
                     end
                 end
@@ -69,12 +69,14 @@ while true
                 else
                     case req[:method]
                     when "GET"
+                        res.set_status(200)
+                        res.set_body(user.to_json, "application/json") 
                     when "DELETE"
                         users_data.delete_if { |user| user[:id] == id }
                         res.set_status(204)
                     else
                         res.set_status(405)
-                        res.set_header('Allow', 'DELETE')
+                        res.set_header('Allow', 'GET, DELETE')
                         res.set_body("405 Method Not Allowed", "text/plain")
                     end
                 end
