@@ -14,6 +14,18 @@
       li {
         margin-bottom: 8px;
       }
+      .delete-button {
+        margin-left: 8px;
+        background-color: red;
+        color: white;
+        border: none;
+      }
+      .delete-button:hover {
+        background-color: white;
+        color: red;
+        cursor: pointer;
+        border: 1px solid red;
+      }
     </style>
   </head>
   <body>
@@ -61,6 +73,15 @@
             users.forEach((user) => {
               const li = document.createElement("li");
               li.textContent = `${user.name} (${user.email})`;
+
+              // 削除ボタンを追加（クリック時の処理は下の user-list のクリックイベントで行う）
+              const deleteButton = document.createElement("button");
+              deleteButton.className = "delete-button";
+              deleteButton.textContent = "削除";
+              // どのユーザーを削除するのか後で取り出せるように id を持たせておく
+              deleteButton.dataset.id = user.id;
+              li.appendChild(deleteButton);
+
               listElement.appendChild(li);
             });
           })
@@ -89,6 +110,34 @@
               alert("必要な情報が入力されていません");
             } else {
               alert("登録に失敗しました");
+            }
+          })
+          .catch((error) => {
+            console.error("通信エラー:", error);
+            alert("通信エラーが発生しました");
+          });
+      });
+
+      // 削除ボタンは一覧の取得後に作られるので、最初から存在する <ul> でクリックを受け取る
+      const userList = document.getElementById("user-list");
+      userList.addEventListener("click", (event) => {
+        // クリックされたのが削除ボタンでなければ何もしない
+        if (!event.target.classList.contains("delete-button")) {
+          return;
+        }
+
+        // ボタンに持たせておいた id から、削除するユーザーのパスを組み立てる
+        const id = event.target.dataset.id;
+
+        fetch(`/api/users/${id}`, {
+          method: "DELETE",
+        })
+          .then((response) => {
+            if (response.status === 204) {
+              // 一覧を読み込み直して、削除後の状態を表示する
+              window.location.href = "/";
+            } else {
+              alert("削除に失敗しました");
             }
           })
           .catch((error) => {

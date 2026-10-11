@@ -59,6 +59,24 @@ while true
                         res.set_body(users_data.to_json, "application/json")
                     end
                 end
+            when %r{\A/api/users/(\d+)\z}
+                id = $1.to_i
+                user = users_data.find { |user| user[:id] == id }
+
+                if user.nil?
+                    res.set_status(404)
+                    res.set_body("404 User Not Found", "text/plain")
+                else
+                    case req[:method]
+                    when "DELETE"
+                        users_data.delete_if { |user| user[:id] == id }
+                        res.set_status(204)
+                    else
+                        res.set_status(405)
+                        res.set_header('Allow', 'DELETE')
+                        res.set_body("405 Method Not Allowed", "text/plain")
+                    end
+                end
             else
                 res.set_status(404)
                 res.set_body("404 Page Not Found", "text/plain")

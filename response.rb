@@ -4,8 +4,10 @@ class Response
     STATUS_CODES = {
         200 => 'OK',
         201 => 'Created',
+        204 => 'No Content',
         400 => 'Bad Request',
         404 => 'Not Found',
+        405 => 'Method Not Allowed',
         500 => 'Internal Server Error'
     }.freeze
 
@@ -13,9 +15,7 @@ class Response
 
     def initialize
        @status = 200
-       @headers = {
-            'Content-Type' => 'text/html; charset=utf-8',
-       }
+       @headers = {}
        @body = ''
     end 
 
@@ -36,7 +36,7 @@ class Response
     end
 
     def send(socket)
-        @headers['Content-Length'] = @body.bytesize.to_s
+        @headers['Content-Length'] = @body.bytesize.to_s unless @status == 204
 
         status_message = STATUS_CODES[@status]
         response = "HTTP/1.1 #{@status} #{status_message}\r\n"
