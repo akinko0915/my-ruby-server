@@ -48,11 +48,16 @@ while true
                     name = params["name"]
                     email = params["email"]
 
-                    users_data << {id: id, name: name, email: email}
-
-                    res.set_status(201)
-                    res.set_header('Location', "/users/#{id}")
-                    res.set_body(users_data.to_json, "application/json")
+                    if name.to_s.empty? || email.to_s.empty?
+                        res.set_status(400)
+                        res.set_body("400 Bad Request", "text/plain")
+                    else
+                        users_data << {id: id, name: name, email: email}
+    
+                        res.set_status(201)
+                        res.set_header('Location', "/users/#{id}")
+                        res.set_body(users_data.to_json, "application/json")
+                    end
                 end
             else
                 res.set_status(404)

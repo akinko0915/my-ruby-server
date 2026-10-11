@@ -85,6 +85,8 @@
             if (response.status === 201) {
               // 特定のパスへ明示的にジャンプ
               window.location.href = "/";
+            } else if (response.status === 400) {
+              alert("必要な情報が入力されていません");
             } else {
               alert("登録に失敗しました");
             }
