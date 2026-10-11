@@ -14,6 +14,18 @@
       li {
         margin-bottom: 8px;
       }
+      .delete-button {
+        margin-left: 8px;
+        background-color: red;
+        color: white;
+        border: none;
+      }
+      .delete-button:hover {
+        background-color: white;
+        color: red;
+        cursor: pointer;
+        border: 1px solid red;
+      }
     </style>
   </head>
   <body>
@@ -61,6 +73,15 @@
             users.forEach((user) => {
               const li = document.createElement("li");
               li.textContent = `${user.name} (${user.email})`;
+
+              // 削除ボタンを追加（クリック時の処理はまだ無い）
+              const deleteButton = document.createElement("button");
+              deleteButton.className = "delete-button";
+              deleteButton.textContent = "削除";
+              // どのユーザーを削除するのか後で取り出せるように id を持たせておく
+              deleteButton.dataset.id = user.id;
+              li.appendChild(deleteButton);
+
               listElement.appendChild(li);
             });
           })
