@@ -65,6 +65,7 @@ while true
 
                 case req[:method]
                 when "DELETE"
+                    res.set_status(204)
                 end
             else
                 res.set_status(404)
