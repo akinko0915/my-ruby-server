@@ -40,7 +40,18 @@ while true
                     res.set_status(200)
                     res.set_body(json_data, "application/json") 
                 when "POST"
+                    body = req[:body]
+
+                    # https://docs.ruby-lang.org/ja/latest/method/URI/s/decode_www_form.html
+                    params = URI.decode_www_form(body).to_h
+                    id = users_data.empty? ? 1 : users_data.map { |u| u[:id] }.max + 1
+                    name = params["name"]
+                    email = params["email"]
+
+                    users_data << {id: id, name: name, email: email}
+
                     res.set_status(201)
+                    res.set_body(users_data.to_json, "application/json")
                 end
             else
                 res.set_status(404)
