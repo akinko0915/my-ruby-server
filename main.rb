@@ -51,6 +51,7 @@ while true
                     users_data << {id: id, name: name, email: email}
 
                     res.set_status(201)
+                    res.set_header('Location', "/users/#{id}")
                     res.set_body(users_data.to_json, "application/json")
                 end
             else
